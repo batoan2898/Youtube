@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingHorizontal="10dp">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <ImageView
+        android:paddingEnd="4dp"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintRight_toLeftOf="@id/guideline_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:ignore="MissingConstraints"
+        android:id="@+id/imThumbCons"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/guideline_1"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:id="@+id/tvTitleCons"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvTitleCons"
+        app:layout_constraintLeft_toRightOf="@id/guideline_1"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/tvChannelCons"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvChannelCons"
+        app:layout_constraintLeft_toRightOf="@id/guideline_1"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/tvPublishAtCons"
+        tools:ignore="MissingConstraints" />
+</androidx.constraintlayout.widget.ConstraintLayout>
