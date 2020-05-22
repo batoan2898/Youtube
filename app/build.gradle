@@ -49,5 +49,10 @@ dependencies {
     implementation "android.arch.lifecycle:runtime:$lifecycle_version"
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.google.firebase:firebase-database:19.1.0'
+    implementation 'com.github.HamedTaherpour:floating-layout-android:1.1.0'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.23'
+
+
 }
 apply plugin: 'com.google.gms.google-services'

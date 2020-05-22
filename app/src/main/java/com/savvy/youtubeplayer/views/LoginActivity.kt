@@ -103,6 +103,7 @@ class LoginActivity : AppCompatActivity() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
+            Log.e("abc",account?.idToken)
             MySharedPreferences.setId(id = account?.id.toString())
             Log.e("toan",MySharedPreferences.getId())
             onLoginSuccessful()

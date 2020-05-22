@@ -1,20 +1,24 @@
 package com.savvy.youtubeplayer.views
 
-import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import com.google.android.youtube.player.YouTubeBaseActivity
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
+import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrCueVideo
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.savvy.youtubeplayer.Constants
 import com.savvy.youtubeplayer.R
 import com.savvy.youtubeplayer.model.YoutubeVideo
 import kotlinx.android.synthetic.main.activity_play_video.*
 
 
-
-class PlayVideoActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener{
+class PlayVideoActivity : AppCompatActivity() {
 
     var id: String = ""
     var listIdVideo: ArrayList<String> = arrayListOf()
@@ -22,21 +26,107 @@ class PlayVideoActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedList
     var listChannelVideo: ArrayList<String> = arrayListOf()
     var listDescriptionVideo: ArrayList<String> = arrayListOf()
     var position: Int = 0
-    var youtubePlayer: YouTubePlayer? = null
-    var isFullscreen: Boolean = false
+    var youtubePlayerVideo: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer? =
+        null
+    var isCreate: Boolean = false
+    var supportsPIP : Boolean = true
 
-    companion object {
-        private var REQUEST_CODE_VIDEO: Int = 2
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
         getListVideo()
-        videoPlayer.initialize(Constants.Key.YOUTUBE_API_KEY, this)
+        initYouTubePlayerView()
+        supportsPIP = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+    }
+
+    private fun initYouTubePlayerView() {
+        videoPlayer.enableBackgroundPlayback(true)
+        initPictureInPicture(videoPlayer)
+        startVideo(position)
+        customAction()
 
     }
 
+    private fun customAction() {
+        videoPlayer.getPlayerUiController().showCustomAction1(true)
+        videoPlayer.getPlayerUiController().showCustomAction2(true)
+        PlayVideoActivity().isChild
+
+        videoPlayer.getPlayerUiController()
+            .setCustomAction1(getDrawable(R.drawable.ic_skip_previous)!!, View.OnClickListener {
+                if (position == 0) {
+                    videoPlayer.getPlayerUiController().showCustomAction1(false)
+                } else {
+                    position--
+                    startVideo(position)
+                }
+            })
+
+        videoPlayer.getPlayerUiController()
+            .setCustomAction2(getDrawable(R.drawable.ic_skip_next)!!, View.OnClickListener {
+                if (position == listIdVideo.size - 1) {
+                    videoPlayer.getPlayerUiController().showCustomAction2(false)
+                } else {
+                    position++
+                    startVideo(position)
+                }
+            })
+
+
+    }
+
+
+    private fun startVideo(position: Int) {
+
+        if (!isCreate) {
+            videoPlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
+                    youTubePlayer.loadOrCueVideo(
+                        lifecycle,
+                        listIdVideo[position], 0f
+                    )
+                    youtubePlayerVideo = youTubePlayer
+                    isCreate = true
+                }
+            })
+        } else {
+            youtubePlayerVideo?.loadOrCueVideo(lifecycle, listIdVideo[position], 0f)
+        }
+
+        changeVideo(position)
+
+    }
+
+    override fun onPause() {
+        videoPlayer.release()
+        super.onPause()
+    }
+
+    private fun initPictureInPicture(youTubePlayerView: YouTubePlayerView) {
+        val pictureInPictureIcon = ImageView(this)
+        pictureInPictureIcon.setImageDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.ic_picture_in_picture
+            )
+        )
+
+        pictureInPictureIcon.setOnClickListener { view ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (supportsPIP)
+                    enterPictureInPictureMode()
+
+            } else {
+                AlertDialog.Builder(this)
+                    .setTitle("Can't enter picture in picture mode")
+                    .setMessage("In order to enter picture in picture mode you need a SDK version >= N.")
+                    .show()
+            }
+        }
+        youTubePlayerView.getPlayerUiController().addView(pictureInPictureIcon)
+
+    }
 
 
     private fun getListVideo() {
@@ -51,71 +141,37 @@ class PlayVideoActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedList
         }
     }
 
-
-    override fun onInitializationSuccess(
-        p0: YouTubePlayer.Provider?,
-        p1: YouTubePlayer?,
-        p2: Boolean
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration
     ) {
-        youtubePlayer = p1
-        youtubePlayer?.loadVideos(listIdVideo,position,0)
-        changeVideo(position)
-        youtubePlayer?.setPlaylistEventListener(object : YouTubePlayer.PlaylistEventListener {
-            override fun onPlaylistEnded() {
-                finishActivity(REQUEST_CODE_VIDEO)
-            }
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
 
-            override fun onPrevious() {
-                if (position ==0) return
-                position--
-                changeVideo(position)
-            }
-
-            override fun onNext() {
-                if (position == listTitleVideo.size -1) return
-                position++
-                changeVideo(position)
-                Log.e("toan",tvTitlePlay.text.toString())
-            }
-        })
-
-        youtubePlayer?.setOnFullscreenListener { p0 -> isFullscreen = p0 }
-
-    }
-
-    override fun onBackPressed() {
-        youtubePlayer
-        if (youtubePlayer != null && isFullscreen) {
-            youtubePlayer!!.setFullscreen(false)
-
+        if (isInPictureInPictureMode) {
+            videoPlayer.enterFullScreen()
+            videoPlayer.getPlayerUiController().showUi(false)
         } else {
-            super.onBackPressed()
+            videoPlayer.exitFullScreen()
+            videoPlayer.getPlayerUiController().showUi(true)
         }
     }
 
-
-    override fun onInitializationFailure(
-        p0: YouTubePlayer.Provider?,
-        p1: YouTubeInitializationResult?
-    ) {
-        if (p1!!.isUserRecoverableError) {
-            p1.getErrorDialog(this, REQUEST_CODE_VIDEO)
-        } else {
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_VIDEO) {
-            videoPlayer.initialize(Constants.Key.YOUTUBE_API_KEY, this)
-
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    fun changeVideo(position: Int){
+    fun changeVideo(position: Int) {
         tvTitlePlay.text = listTitleVideo[position]
         tvChannelPlay.text = listChannelVideo[position]
         tvDescriptionPlay.text = listDescriptionVideo[position]
     }
+
+    override fun onBackPressed() {
+        if (videoPlayer.isFullScreen()) {
+            videoPlayer.exitFullScreen()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (supportsPIP)
+                    enterPictureInPictureMode()
+            }
+        }
+    }
+    
+
 }

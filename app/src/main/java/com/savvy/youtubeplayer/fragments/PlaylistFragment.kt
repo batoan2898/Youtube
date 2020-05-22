@@ -15,7 +15,6 @@ import com.savvy.youtubeplayer.data.MySharedPreferences
 import com.savvy.youtubeplayer.model.YoutubeVideo
 import com.savvy.youtubeplayer.views.MainActivity
 import com.savvy.youtubeplayer.views.PlayVideoActivity
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_playlist.*
 
 class PlaylistFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVideo {

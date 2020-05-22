@@ -3,7 +3,6 @@ package com.savvy.youtubeplayer.fragments
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -25,7 +24,6 @@ import kotlin.collections.ArrayList
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.core.view.isVisible
 import com.google.firebase.database.FirebaseDatabase
 import com.savvy.youtubeplayer.data.MySharedPreferences
 
