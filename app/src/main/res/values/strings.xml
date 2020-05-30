@@ -29,6 +29,9 @@ z
     <string name="add_to_my_playlist">Add to My Playlist</string>
     <string name="delete">Delete</string>
     <string name="default_notification_channel_id">Have a nice day with Videohub!</string>
+    <string name="info">info</string>
+    <string name="info_description">descript</string>
+    <string name="info_uri">uri</string>
 
     <!--  Home -->
 

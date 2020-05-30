@@ -11,7 +11,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -58,15 +57,7 @@ public class FirebaseMessingService extends FirebaseMessagingService {
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)
                         .setDefaults(Notification.DEFAULT_ALL)
-                        .setPriority(NotificationManager.IMPORTANCE_HIGH)
-                        .addAction(new NotificationCompat.Action(
-                                android.R.drawable.sym_call_missed,
-                                "Cancel",
-                                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)))
-                        .addAction(new NotificationCompat.Action(
-                                android.R.drawable.sym_call_outgoing,
-                                "OK",
-                                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)));
+                        .setPriority(NotificationManager.IMPORTANCE_HIGH);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

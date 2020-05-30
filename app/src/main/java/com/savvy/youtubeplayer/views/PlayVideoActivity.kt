@@ -1,5 +1,6 @@
 package com.savvy.youtubeplayer.views
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -35,9 +36,21 @@ class PlayVideoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
-        getListVideo()
+        getListVideo(intent)
         initYouTubePlayerView()
         supportsPIP = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        var videoId = listIdVideo[position]
+        getListVideo(intent)
+        if (videoId == listIdVideo[position]){
+            videoPlayer.getPlayerUiController().showUi(true)
+        }
+        else{
+            startVideo(position)
+        }
+        super.onNewIntent(intent)
     }
 
     private fun initYouTubePlayerView() {
@@ -98,10 +111,6 @@ class PlayVideoActivity : AppCompatActivity() {
 
     }
 
-    override fun onPause() {
-        videoPlayer.release()
-        super.onPause()
-    }
 
     private fun initPictureInPicture(youTubePlayerView: YouTubePlayerView) {
         val pictureInPictureIcon = ImageView(this)
@@ -128,9 +137,8 @@ class PlayVideoActivity : AppCompatActivity() {
 
     }
 
-
-    private fun getListVideo() {
-        position = intent.getSerializableExtra(Constants.Key.INTENT_POSITION_VIDEO) as Int
+    private fun getListVideo(intent: Intent?) {
+        position = intent?.getSerializableExtra(Constants.Key.INTENT_POSITION_VIDEO) as Int
         val listVideo =
             intent.getSerializableExtra(Constants.Key.INTENT_LIST_VIDEO) as ArrayList<YoutubeVideo>
         for (i in 0 until listVideo.size) {
@@ -146,7 +154,6 @@ class PlayVideoActivity : AppCompatActivity() {
         newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-
         if (isInPictureInPictureMode) {
             videoPlayer.enterFullScreen()
             videoPlayer.getPlayerUiController().showUi(false)
@@ -171,7 +178,12 @@ class PlayVideoActivity : AppCompatActivity() {
                     enterPictureInPictureMode()
             }
         }
-    }
-    
 
+    }
+
+    override fun onStop() {
+        videoPlayer.release()
+        finish()
+        super.onStop()
+    }
 }
