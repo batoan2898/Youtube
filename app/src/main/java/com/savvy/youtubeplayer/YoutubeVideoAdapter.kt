@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.savvy.youtubeplayer.model.YoutubeVideo
-import kotlinx.android.synthetic.main.item_video_constraint.view.*
+import kotlinx.android.synthetic.main.item_video_relative.view.*
 
 class YoutubeVideoAdapter(context: Context?, private val onClickListener: OnClickVideo) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -31,7 +31,7 @@ class YoutubeVideoAdapter(context: Context?, private val onClickListener: OnClic
         when (viewType) {
             VIEW_TYPE_NORMAL -> return YoutubeVideoHolder(
                 inflater.inflate(
-                    R.layout.item_video_constraint,
+                    R.layout.item_video_relative,
                     parent,
                     false
                 )
@@ -70,10 +70,11 @@ class YoutubeVideoAdapter(context: Context?, private val onClickListener: OnClic
                     onClickListener.onVideoItemClick(data, position)
                 }
 
-                holder.itemView.setOnLongClickListener {
+                holder.itemView.imgMenu.setOnClickListener {
                     onClickListener.onVideoItemLongClick(video, position)
                     true
                 }
+
             }
         }
 
@@ -90,12 +91,12 @@ class YoutubeVideoAdapter(context: Context?, private val onClickListener: OnClic
 
     open class YoutubeVideoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindData(video: YoutubeVideo) {
-            itemView.tvTitleCons.text = video.title
-            itemView.tvChannelCons.text = video.channel
+            itemView.tvTitleRela.text = video.title
+            itemView.tvChannelRela.text = video.channel
 //            itemView.tvPublishAtCons.text = video.publishAt.substring(0, 10)
             Glide.with(itemView.context)
                 .load(video.url)
-                .into(itemView.imThumbCons)
+                .into(itemView.imThumbRela)
         }
 
     }

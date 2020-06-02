@@ -9,17 +9,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.savvy.youtubeplayer.Constants
+import com.savvy.youtubeplayer.PlaylistAdapter
 import com.savvy.youtubeplayer.R
-import com.savvy.youtubeplayer.YoutubeVideoAdapter
 import com.savvy.youtubeplayer.data.MySharedPreferences
 import com.savvy.youtubeplayer.model.YoutubeVideo
 import com.savvy.youtubeplayer.views.MainActivity
 import com.savvy.youtubeplayer.views.PlayVideoActivity
 import kotlinx.android.synthetic.main.fragment_playlist.*
 
-class PlaylistFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVideo {
+class PlaylistFragment : BaseFragment<MainActivity>(), PlaylistAdapter.OnClickVideo {
     private var playlistFirebaseDb: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private lateinit var adapter: YoutubeVideoAdapter
+    private lateinit var adapter: PlaylistAdapter
     private var dataChange: ArrayList<YoutubeVideo?>? = arrayListOf()
 
     override fun onVideoItemClick(data: ArrayList<YoutubeVideo?>?, position: Int) {
@@ -91,7 +91,7 @@ class PlaylistFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnCli
     }
 
     private fun initView() {
-        adapter = YoutubeVideoAdapter(context, this)
+        adapter = PlaylistAdapter(context, this)
         recyclerPlaylistFragment.adapter = adapter
 
     }

@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:background="#2C3F38"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="10dp"
-    android:paddingTop="10dp">
-
-    <View
-        android:layout_width="4dp"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/viewCenter"/>
+    android:layout_height="wrap_content">
 
     <ImageView
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
         android:src="@mipmap/ic_launcher"
-        android:layout_toStartOf="@id/viewCenter"
         android:id="@+id/imThumbRela"/>
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvTitleRela"
-        android:layout_toEndOf="@id/viewCenter"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@id/imThumbRela"
         android:textSize="18sp"
+        android:textColor="@color/white"
         android:maxLines="2"
         android:textStyle="bold"
         android:ellipsize="end"/>
 
     <TextView
+        android:textColor="@color/white"
         android:id="@+id/tvChannelRela"
         android:layout_below="@id/tvTitleRela"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@id/viewCenter"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:maxLines="1" />
 
     <TextView
-        android:layout_width="0dp"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tvPublishRela"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@id/viewCenter"
         android:layout_below="@id/tvChannelRela"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:maxLines="1"/>
 
+    <ImageView
+        android:layout_below="@id/imThumbRela"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/imgMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu" />
+
+    <View
+        android:background="#707070"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"/>
 </RelativeLayout>

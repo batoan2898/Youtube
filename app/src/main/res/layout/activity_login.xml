@@ -1,21 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.LoginActivity">
+    tools:context=".views.LoginActivity"
+    android:background="@drawable/gradient_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_centerInParent="true"
+        android:text="@string/app_name"
+        android:gravity="center"
+        android:textSize="@dimen/dimen_tvAppName"
+        android:layout_above="@id/btnLoginFb"
+        android:layout_marginBottom="60dp"
+        />
 
     <Button
+        android:layout_height="50dp"
+        android:layout_width="250dp"
+        android:textAllCaps="false"
+        android:background="@drawable/corner_background"
+        android:drawableLeft="@drawable/ic_facebook"
         android:text="@string/login_with_facebook"
+        android:gravity="center"
         android:id="@+id/btnLoginFb"
-        style="@style/login_style" />
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_centerInParent="true" />
 
     <Button
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_marginTop="30dp"
+        android:layout_centerInParent="true"
+        android:layout_height="50dp"
+        android:layout_width="250dp"
+        android:background="@drawable/corner_background"
+        android:gravity="center"
+        android:drawableLeft="@drawable/ic_google"
         android:id="@+id/btnLoginGg"
         android:textAllCaps="false"
         android:text="@string/login_with_google"
-        style="@style/login_style"
         android:layout_below="@id/btnLoginFb" />
 </RelativeLayout>

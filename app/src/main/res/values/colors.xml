@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="black">#000</color>
-    <color name="bgBottomNavigation">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bgBottomNavigation">#2C3F38</color>
     <color name="titleToolbar">#14A0A0</color>
 </resources>

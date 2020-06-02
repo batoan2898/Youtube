@@ -1,21 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
+    android:background="#2C3F38"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".fragments.ProfileFragment">
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/layoutAccount"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="80dp">
+        <View
+            android:background="#707070"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_width="fill_parent"/>
 
-    <Button
+        <ImageView
+            android:id="@+id/imgAccount"
+            android:layout_centerVertical="true"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_account"/>
+        <TextView
+            android:paddingTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/tvName"
+            android:layout_toRightOf="@id/imgAccount"
+            android:textSize="@dimen/dimen_textNormal"
+            android:textColor="@color/white"
+            android:text="@string/app_name"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvName"
+            android:layout_toRightOf="@id/imgAccount"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_textNormal"
+            android:id="@+id/tvEmail"
+            android:text="Email"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:paddingHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/layoutAccount">
+
+        <ImageView
+            android:id="@+id/imgHistory"
+            android:layout_centerVertical="true"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_history"/>
+        <TextView
+            android:layout_toRightOf="@id/imgHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/dimen_textNormal"
+            android:textColor="@color/white"
+            android:text="@string/tv_history"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/log_out"
-        tools:ignore="MissingConstraints" />
+        android:layout_height="60dp">
+        <View
+            android:background="#707070"
+            android:layout_height="2dp"
+            android:layout_width="fill_parent"/>
+        <ImageView
+            android:paddingLeft="30dp"
+            android:id="@+id/imgExit"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_exit"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:textSize="@dimen/dimen_textNormal"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:text="@string/log_out"
+            android:paddingLeft="40dp"
+            android:layout_toRightOf="@id/imgExit"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

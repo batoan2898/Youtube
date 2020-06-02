@@ -8,7 +8,7 @@ z
     <!-- Common -->
     <string name="search_video_on_videohub">Search video on VideoHub</string>
     <string name="search">Search</string>
-    <string name="log_out">Log out</string>
+    <string name="log_out">Logout</string>
     <string name="successful">Successful</string>
     <string name="no_results_were_found">No results were found</string>
 
@@ -16,11 +16,11 @@ z
 
     <!--  Login -->
 
-    <string name="login_failed">Login Failed</string>
-    <string name="login_cancelled">Login Cancelled</string>
-    <string name="login_successful">Login Successful</string>
-    <string name="login_with_facebook">Login with Facebook</string>
-    <string name="login_with_google">Login with Google</string>
+    <string name="login_failed">Log in Failed</string>
+    <string name="login_cancelled">Log in Cancelled</string>
+    <string name="login_successful">Log in Successful</string>
+    <string name="login_with_facebook">Log in with Facebook</string>
+    <string name="login_with_google">Log in with Google</string>
 
     <!-- Item -->
     <string name="item_channel">Channel</string>
@@ -32,6 +32,7 @@ z
     <string name="info">info</string>
     <string name="info_description">descript</string>
     <string name="info_uri">uri</string>
+    <string name="tv_history">History</string>
 
     <!--  Home -->
 

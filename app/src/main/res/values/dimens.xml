@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="size_18dip">18dip</dimen>
+    <dimen name="dimen_textNormal">16sp</dimen>
+    <dimen name="dimen_tvAppName">42sp</dimen>
 
 </resources>

@@ -13,6 +13,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -23,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.savvy.youtubeplayer.R
 import com.savvy.youtubeplayer.fragments.*
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private val homeFragment = HomeFragment.newInstance()
     private val playlistFragment = PlaylistFragment.newInstance()
     private val profileFragment = ProfileFragment.newInstance()
+
     private lateinit var isFirstFragment: Fragment
 
     private val onNavigationItemSelectedListener =
@@ -43,12 +46,16 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.navHome -> {
                     loadFragment(homeFragment)
+                    toolbarMain.title = "Home"
                 }
                 R.id.navPlaylist -> {
                     loadFragment(playlistFragment)
+                    toolbarMain.title = "Playlist"
+
                 }
                 R.id.navProfile -> {
                     loadFragment(profileFragment)
+                    toolbarMain.title = "Profile"
                 }
             }
             true
@@ -118,8 +125,6 @@ class MainActivity : AppCompatActivity() {
     private fun initToolbar() {
         setSupportActionBar(toolbarMain)
         toolbarMain.setTitleTextColor(R.color.titleToolbar)
-        toolbarMain.setLogo(R.drawable.im_logo)
-
     }
 
 
