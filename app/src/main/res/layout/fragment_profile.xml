@@ -65,8 +65,18 @@
             android:gravity="center"
             android:layout_centerVertical="true"
             android:textSize="@dimen/dimen_textNormal"
+            android:id="@+id/tvHis"
             android:textColor="@color/white"
             android:text="@string/tv_history"/>
+        <TextView
+            android:paddingLeft="20dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/tvHis"
+            android:id="@+id/tvTimeUsage"
+            android:gravity="center"
+            android:textColor="@color/white"/>
 
     </RelativeLayout>
 

@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".views.SplashActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_centerInParent="true"
+        android:text="@string/app_name"
+        android:gravity="center"
+        android:layout_above="@id/spinkit"
+        android:textSize="@dimen/dimen_tvAppName"
+        android:layout_marginBottom="30dp"
+        />
 
 
     <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/spinkit"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         app:SpinKit_Style="Wave"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-31dp"
         tools:layout_editor_absoluteY="482dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.23'
     implementation 'androidx.navigation:navigation-runtime:2.0.0'
+    implementation 'the.bot.box:appusagemonitor:2.1.0'
+
 
 
 }

@@ -22,15 +22,6 @@
             android:background="#2C3F38"
             android:outlineAmbientShadowColor="@color/black">
 
-            <EditText
-                android:textColorHint="@color/white"
-                android:id="@+id/edtSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/search"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:maxLines="1" />
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

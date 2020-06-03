@@ -13,6 +13,10 @@ object MySharedPreferences {
 
     private const val Id = ""
 
+    private const val keyName = "name"
+
+    private const val keyEmail = "email"
+
 
     fun init(context: Context) {
         preferences = context.getSharedPreferences(MY_SHARE_PREFERENCES, Context.MODE_PRIVATE)
@@ -28,11 +32,6 @@ object MySharedPreferences {
         editor.apply()
     }
 
-//    var isLogin: Boolean
-//        get() = preferences.getBoolean(KEY_LOGIN, false)
-//        set(status) = preferences.edit {
-//            it.putBoolean(KEY_LOGIN, status)
-//        }
 
     fun checkLogin(): Boolean {
         return preferences.getBoolean(KEY_LOGIN, false)
@@ -53,5 +52,27 @@ object MySharedPreferences {
     fun getId(): String {
         return preferences.getString(Id,"").toString()
     }
+
+    fun setName(name: String){
+        preferences.edit(){
+            it.putString(keyName,name)
+        }
+    }
+
+    fun setEmail(email: String){
+        preferences.edit(){
+            it.putString(keyEmail,email)
+        }
+    }
+
+
+    fun getName():String{
+        return preferences.getString(keyName,"").toString()
+    }
+
+    fun getEmail():String{
+        return preferences.getString(keyEmail,"").toString()
+    }
+
 
 }

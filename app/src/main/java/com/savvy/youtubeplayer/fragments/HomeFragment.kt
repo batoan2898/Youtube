@@ -3,7 +3,6 @@ package com.savvy.youtubeplayer.fragments
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -38,14 +37,14 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
     private var dataResponse: ArrayList<DataYoutubeVideo> = arrayListOf()
     private var dataSearchResponse: ArrayList<DataSearchYoutubeVideo> = arrayListOf()
     private var dialogLoading: Dialog? = null
-    private var timer = Timer()
-
+    private var playListID: String =""
     override fun getLayoutId(): Int {
         return R.layout.fragment_home
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         initView()
+        randomPlaylist()
         getData()
         super.onActivityCreated(savedInstanceState)
 
@@ -86,11 +85,11 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
     }
 
 
-    fun searchVideo(s: Editable?){
+    fun searchVideo(s: String?){
         Thread(object : Runnable, Callback<DataSearch>{
             override fun run() {
                 var keySearch: String? = s.toString()
-                var apiKey: String = Constants.Key.YOUTUBE_API_KEY
+                var apiKey: String = Constants.Key.YOUTUBE_API_KEY2
                 var type = "video"
                 var maxResult = 25
                 keySearch?.let {
@@ -124,10 +123,12 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    private fun randomPlaylist(){
+        var random = Random()
+        var temp = random.nextInt(Constants.Key.arrayPlaylist.size)
+        playListID = Constants.Key.arrayPlaylist[temp]
     }
+
 
     private fun getData() {
         dataAll.value?.add(null)
@@ -136,13 +137,13 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
         if (pageToken == null) {
             setData(
                 callback.firstSelectData(
-                    Constants.Key.YOUTUBE_API_KEY, Constants.Key.ID_PLAYLIST, 15
+                    Constants.Key.YOUTUBE_API_KEY2, playListID, 15
                 )
             )
         } else {
             setData(
                 callback.selectData(
-                    Constants.Key.YOUTUBE_API_KEY, Constants.Key.ID_PLAYLIST, 15, pageToken
+                    Constants.Key.YOUTUBE_API_KEY2, playListID, 15, pageToken
                 )
             )
         }

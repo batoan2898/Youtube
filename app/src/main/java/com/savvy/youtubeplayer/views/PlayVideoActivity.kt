@@ -278,12 +278,18 @@ class PlayVideoActivity : AppCompatActivity() {
         position = intent?.getSerializableExtra(Constants.Key.INTENT_POSITION_VIDEO) as Int
         val listVideo =
             intent.getSerializableExtra(Constants.Key.INTENT_LIST_VIDEO) as ArrayList<YoutubeVideo>
+
+        listIdVideo.clear()
+        listChannelVideo.clear()
+        listTitleVideo.clear()
+        listDescriptionVideo.clear()
         for (i in 0 until listVideo.size) {
             listIdVideo.add(listVideo[i].videoId)
             listChannelVideo.add(listVideo[i].channel)
             listTitleVideo.add(listVideo[i].title)
             listDescriptionVideo.add(listVideo[i].description)
         }
+
     }
 
     override fun onPictureInPictureModeChanged(

@@ -32,7 +32,7 @@ z
     <string name="info">info</string>
     <string name="info_description">descript</string>
     <string name="info_uri">uri</string>
-    <string name="tv_history">History</string>
+    <string name="tv_history">Time usage:</string>
 
     <!--  Home -->
 
