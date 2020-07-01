@@ -33,6 +33,8 @@ z
     <string name="info_description">descript</string>
     <string name="info_uri">uri</string>
     <string name="tv_history">Time usage:</string>
+    <string name="channel_name">youtube_audio</string>
+    <string name="channel_description">play_audio</string>
 
     <!--  Home -->
 

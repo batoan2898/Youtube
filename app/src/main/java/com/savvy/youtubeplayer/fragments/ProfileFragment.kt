@@ -37,9 +37,13 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
         setUpView()
+        super.onActivityCreated(savedInstanceState)
     }
 
     private fun googleLogin() {
@@ -55,7 +59,7 @@ class ProfileFragment : Fragment() {
             "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
             TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
             TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)
-        );
+        )
     }
 
 
@@ -68,9 +72,10 @@ class ProfileFragment : Fragment() {
 
         Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                millis +=1000
+                millis += 1000
                 activity?.runOnUiThread {
-                    tvTimeUsage.text = formatTime(millis)
+                    if (tvTimeUsage != null) tvTimeUsage.text = formatTime(millis)
+                    
                 }
             }
         }, 0, 1000)

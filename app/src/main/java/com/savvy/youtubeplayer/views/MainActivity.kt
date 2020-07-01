@@ -2,6 +2,7 @@ package com.savvy.youtubeplayer.views
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -143,5 +144,13 @@ class MainActivity : AppCompatActivity() {
 
     fun selectItem(itemId: Int){
         navigationView.selectedItemId = itemId
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent()
+        intent.action = Intent.ACTION_MAIN
+        intent.addCategory(Intent.CATEGORY_HOME)
+        startActivity(intent)
+        super.onBackPressed()
     }
 }

@@ -1,8 +1,6 @@
 package com.savvy.youtubeplayer.views
 
-import android.app.PendingIntent
-import android.app.PictureInPictureParams
-import android.app.RemoteAction
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,6 +11,8 @@ import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -20,6 +20,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.activity_play_video.*
 class PlayVideoActivity : AppCompatActivity() {
 
     var id: String = ""
+    var listVideo: ArrayList<YoutubeVideo> = arrayListOf()
     var listIdVideo: ArrayList<String> = arrayListOf()
     var listTitleVideo: ArrayList<String> = arrayListOf()
     var listChannelVideo: ArrayList<String> = arrayListOf()
@@ -48,20 +50,26 @@ class PlayVideoActivity : AppCompatActivity() {
     var isRelease: Boolean = false
     private val ACTION_MEDIA_CONTROL = "media_control"
     private val EXTRA_CONTROL_TYPE = "control_type"
-    private val REQUEST_PLAY = 1
     private val REQUEST_PAUSE = 2
     private val REQUEST_PREV = 0
     private val REQUEST_NEXT = 3
-    private val CONTROL_TYPE_PLAY = 1
     private val CONTROL_TYPE_PAUSE = 2
     private val CONTROL_TYPE_PREV = 0
     private val CONTROL_TYPE_NEXT = 3
+    lateinit var mediaSession: MediaSessionCompat
+    private val CHANNEL_ID: Int = 228
+    lateinit var notification: Notification
+    lateinit var notificationManager: NotificationManager
+
+    private var stateVideo: String = "PLAYING"
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val mPictureInPictureParamsBuilder = PictureInPictureParams.Builder()
 
     private val mReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
+
             intent?.let { intent ->
                 if (intent.action != ACTION_MEDIA_CONTROL) {
                     return
@@ -69,24 +77,32 @@ class PlayVideoActivity : AppCompatActivity() {
 
                 val controlType = intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)
                 when (controlType) {
-                    CONTROL_TYPE_PLAY -> youtubePlayerVideo?.play()
                     CONTROL_TYPE_PAUSE -> {
-                        youtubePlayerVideo?.pause()
-                        Log.e("aa", "pause")
+                        if (stateVideo == "PLAYING") {
+                            stateVideo = "PAUSED"
+                            youtubePlayerVideo?.pause()
+                            createNotification()
+                        } else if (stateVideo == "PAUSED") {
+                            stateVideo = "PLAYING"
+                            youtubePlayerVideo?.play()
+                            createNotification()
+                        }
                     }
 
                     CONTROL_TYPE_PREV ->
                         if (position > 0) {
-                            Log.e("aa", "prev")
                             position--
                             startVideo(position)
+                            createNotification()
+
                         } else return
 
                     CONTROL_TYPE_NEXT ->
                         if (position < listIdVideo.size - 1) {
-                            Log.e("aa", "next")
                             position++
                             startVideo(position)
+                            createNotification()
+
                         } else return
 
                     else -> return@let
@@ -97,9 +113,11 @@ class PlayVideoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerReceiver(mReceiver, IntentFilter(ACTION_MEDIA_CONTROL))
         setContentView(R.layout.activity_play_video)
         getListVideo(intent)
         initYouTubePlayerView()
+        createNotification()
         supportsPIP = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
@@ -167,6 +185,8 @@ class PlayVideoActivity : AppCompatActivity() {
         } else {
             youtubePlayerVideo?.loadOrCueVideo(lifecycle, listIdVideo[position], 0f)
         }
+
+        youtubePlayerVideo?.play()
 
         changeVideo(position)
 
@@ -271,12 +291,13 @@ class PlayVideoActivity : AppCompatActivity() {
                 .setMessage("In order to enter picture in picture mode you need a SDK version >= N.")
                 .show()
         }
+
     }
 
 
     private fun getListVideo(intent: Intent?) {
         position = intent?.getSerializableExtra(Constants.Key.INTENT_POSITION_VIDEO) as Int
-        val listVideo =
+        listVideo =
             intent.getSerializableExtra(Constants.Key.INTENT_LIST_VIDEO) as ArrayList<YoutubeVideo>
 
         listIdVideo.clear()
@@ -299,7 +320,6 @@ class PlayVideoActivity : AppCompatActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             isRelease = true
-            registerReceiver(mReceiver, IntentFilter(ACTION_MEDIA_CONTROL))
             videoPlayer.enterFullScreen()
             videoPlayer.getPlayerUiController().showUi(false)
 
@@ -339,6 +359,7 @@ class PlayVideoActivity : AppCompatActivity() {
                 ) {
 
                     if (state == PlayerConstants.PlayerState.PLAYING) {
+                        stateVideo = "PLAYING"
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             updatePictureInPictureActions(
                                 R.drawable.ic_skip_previous, R.drawable.ic_pause
@@ -348,11 +369,12 @@ class PlayVideoActivity : AppCompatActivity() {
 
                         }
                     } else if (state == PlayerConstants.PlayerState.PAUSED) {
+                        stateVideo = "PAUSED"
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             updatePictureInPictureActions(
                                 R.drawable.ic_skip_previous, R.drawable.ic_play
-                                , R.drawable.ic_skip_next, CONTROL_TYPE_PLAY, CONTROL_TYPE_PREV
-                                , CONTROL_TYPE_NEXT, REQUEST_PLAY, REQUEST_PREV, REQUEST_NEXT
+                                , R.drawable.ic_skip_next, CONTROL_TYPE_PAUSE, CONTROL_TYPE_PREV
+                                , CONTROL_TYPE_NEXT, REQUEST_PAUSE, REQUEST_PREV, REQUEST_NEXT
                             )
 
                         }
@@ -375,7 +397,6 @@ class PlayVideoActivity : AppCompatActivity() {
             })
         } else {
             isRelease = false
-            unregisterReceiver(mReceiver)
             videoPlayer.exitFullScreen()
             videoPlayer.getPlayerUiController().showUi(true)
         }
@@ -392,6 +413,7 @@ class PlayVideoActivity : AppCompatActivity() {
             videoPlayer.exitFullScreen()
         } else {
             initPictureInPicture()
+            startActivity(Intent(this@PlayVideoActivity, MainActivity::class.java))
         }
     }
 
@@ -402,11 +424,103 @@ class PlayVideoActivity : AppCompatActivity() {
         if (isScreenOn) {
             if (isRelease) {
                 youtubePlayerVideo?.pause()
+                stateVideo = "PAUSED"
+
             } else initPictureInPicture()
         }
 
         super.onStop()
     }
 
+    override fun onDestroy() {
+        unregisterReceiver(mReceiver)
+        videoPlayer.release()
+        super.onDestroy()
+    }
+
+    fun createNotification() {
+        updateMedia()
+        createNotificationChannel()
+
+        val intent = Intent(applicationContext, PlayVideoActivity::class.java)
+        intent.putExtra(Constants.Key.INTENT_POSITION_VIDEO, position)
+        intent.putExtra(Constants.Key.INTENT_LIST_VIDEO, listVideo)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+        val pIntent = PendingIntent.getActivity(
+            applicationContext,
+            System.currentTimeMillis().toInt(), intent, 0
+        )
+
+        notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID.toString())
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setSmallIcon(R.drawable.im_logo)
+            .addAction(notificationAction(CONTROL_TYPE_PREV, REQUEST_PREV))
+            .addAction(notificationAction(CONTROL_TYPE_PAUSE, REQUEST_PAUSE))
+            .addAction(notificationAction(CONTROL_TYPE_NEXT, REQUEST_NEXT))
+            .setContentIntent(pIntent)
+            .setContentTitle(listTitleVideo[position])
+            .setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0, 1, 2)
+                    .setMediaSession(mediaSession.sessionToken)
+                    .setCancelButtonIntent(null)
+            )
+            .build()
+
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(CHANNEL_ID, notification)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_name)
+            val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID.toString(), name, importance).apply {
+                description = descriptionText
+            }
+            notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun notificationAction(action: Int, requestCode: Int): NotificationCompat.Action {
+
+        val icon = when (action) {
+            CONTROL_TYPE_PREV -> R.drawable.ic_skip_previous
+            CONTROL_TYPE_PAUSE -> {
+                if (stateVideo == "PAUSED") {
+                    R.drawable.ic_play
+                } else R.drawable.ic_pause
+            }
+            CONTROL_TYPE_NEXT -> R.drawable.ic_skip_next
+            else -> R.drawable.ic_skip_next
+        }
+        return NotificationCompat.Action.Builder(
+            icon,
+            " action",
+            playerPendingIntent(action, requestCode)
+        ).build()
+    }
+
+    private fun playerPendingIntent(action: Int, requestCode: Int): PendingIntent {
+        return PendingIntent.getBroadcast(
+            applicationContext,
+            requestCode, Intent(ACTION_MEDIA_CONTROL)
+                .putExtra(EXTRA_CONTROL_TYPE, action), PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
+    private fun updateMedia() {
+        mediaSession = MediaSessionCompat(this, "Musiccc")
+        mediaSession.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, listTitleVideo[position])
+                .build()
+        )
+
+    }
 
 }

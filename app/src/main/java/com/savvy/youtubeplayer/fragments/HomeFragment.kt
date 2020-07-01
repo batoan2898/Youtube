@@ -89,7 +89,7 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
         Thread(object : Runnable, Callback<DataSearch>{
             override fun run() {
                 var keySearch: String? = s.toString()
-                var apiKey: String = Constants.Key.YOUTUBE_API_KEY2
+                var apiKey: String = Constants.Key.YOUTUBE_API_KEY4
                 var type = "video"
                 var maxResult = 25
                 keySearch?.let {
@@ -137,13 +137,13 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
         if (pageToken == null) {
             setData(
                 callback.firstSelectData(
-                    Constants.Key.YOUTUBE_API_KEY2, playListID, 15
+                    Constants.Key.YOUTUBE_API_KEY4, playListID, 15
                 )
             )
         } else {
             setData(
                 callback.selectData(
-                    Constants.Key.YOUTUBE_API_KEY2, playListID, 15, pageToken
+                    Constants.Key.YOUTUBE_API_KEY4, playListID, 15, pageToken
                 )
             )
         }
@@ -191,7 +191,6 @@ class HomeFragment : BaseFragment<MainActivity>(), YoutubeVideoAdapter.OnClickVi
         intent.putExtra(Constants.Key.INTENT_POSITION_VIDEO, position)
         intent.putExtra(Constants.Key.INTENT_LIST_VIDEO, data)
         startActivity(intent)
-
     }
 
     override fun onVideoItemLongClick(video: YoutubeVideo, position: Int) {
