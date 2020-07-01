@@ -7,13 +7,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -22,6 +24,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -53,9 +57,12 @@ class PlayVideoActivity : AppCompatActivity() {
     private val REQUEST_PAUSE = 2
     private val REQUEST_PREV = 0
     private val REQUEST_NEXT = 3
+    private val REQUEST_DELETE = 4
     private val CONTROL_TYPE_PAUSE = 2
     private val CONTROL_TYPE_PREV = 0
     private val CONTROL_TYPE_NEXT = 3
+    private val CONTROL_TYPE_DELETE = 4
+
     lateinit var mediaSession: MediaSessionCompat
     private val CHANNEL_ID: Int = 228
     lateinit var notification: Notification
@@ -105,6 +112,11 @@ class PlayVideoActivity : AppCompatActivity() {
 
                         } else return
 
+                    CONTROL_TYPE_DELETE -> {
+                        notificationManager.cancel(CHANNEL_ID)
+                        videoPlayer.release()
+                        finish()
+                    }
                     else -> return@let
                 }
             }
@@ -117,7 +129,6 @@ class PlayVideoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_play_video)
         getListVideo(intent)
         initYouTubePlayerView()
-        createNotification()
         supportsPIP = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
@@ -266,7 +277,7 @@ class PlayVideoActivity : AppCompatActivity() {
         )
         youTubePlayerView.getPlayerUiController().addView(pictureInPictureIcon)
 
-        pictureInPictureIcon.setOnClickListener { view ->
+        pictureInPictureIcon.setOnClickListener {
             initPictureInPicture()
         }
     }
@@ -282,7 +293,9 @@ class PlayVideoActivity : AppCompatActivity() {
                         , CONTROL_TYPE_NEXT, REQUEST_PAUSE, REQUEST_PREV, REQUEST_NEXT
                     )
 
-                    enterPictureInPictureMode(mPictureInPictureParamsBuilder.build())
+                    if (this.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                        enterPictureInPictureMode(mPictureInPictureParamsBuilder.build())
+                    }
                 }
 
         } else {
@@ -291,6 +304,7 @@ class PlayVideoActivity : AppCompatActivity() {
                 .setMessage("In order to enter picture in picture mode you need a SDK version >= N.")
                 .show()
         }
+        createNotification()
 
     }
 
@@ -452,12 +466,16 @@ class PlayVideoActivity : AppCompatActivity() {
             System.currentTimeMillis().toInt(), intent, 0
         )
 
+        val largeIcon: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.im_logo)
+
+
         notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID.toString())
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSmallIcon(R.drawable.im_logo)
             .addAction(notificationAction(CONTROL_TYPE_PREV, REQUEST_PREV))
             .addAction(notificationAction(CONTROL_TYPE_PAUSE, REQUEST_PAUSE))
             .addAction(notificationAction(CONTROL_TYPE_NEXT, REQUEST_NEXT))
+            .addAction(notificationAction(CONTROL_TYPE_DELETE, REQUEST_DELETE))
             .setContentIntent(pIntent)
             .setContentTitle(listTitleVideo[position])
             .setStyle(
@@ -466,6 +484,7 @@ class PlayVideoActivity : AppCompatActivity() {
                     .setMediaSession(mediaSession.sessionToken)
                     .setCancelButtonIntent(null)
             )
+            .setLargeIcon(largeIcon)
             .build()
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -496,6 +515,8 @@ class PlayVideoActivity : AppCompatActivity() {
                 } else R.drawable.ic_pause
             }
             CONTROL_TYPE_NEXT -> R.drawable.ic_skip_next
+
+            CONTROL_TYPE_DELETE -> R.drawable.ic_dialog_close_dark
             else -> R.drawable.ic_skip_next
         }
         return NotificationCompat.Action.Builder(
